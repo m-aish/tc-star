@@ -6,8 +6,12 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 
+@st.cache_resource
+def load_model():
+        model = SentenceTransformer('bert-base-nli-mean-tokens')
+        return model
 
-st.markdown("# 📃 *tc")
+st.markdown("# 📃 tc*")
 st.markdown("### a tool that can read Terms & Conditions agreements and flag anything that is non-standard.")
 tc = st.text_input("Enter the Terms & Conditions document")
 
@@ -15,12 +19,12 @@ if st.button("Analyze"):
     if tc=='':
         st.error("Please enter input T&C!")
     else:
-        model = SentenceTransformer('bert-base-nli-mean-tokens')
+        model = load_model()
         pickle_in = open("embeddings.pkl","rb")
         stored_data=pickle.load(pickle_in)
+
         stored_sentences = stored_data['sentences']
         stored_embeddings = stored_data['embeddings']
-
         obj = {}
         sentences = tc.split(". ")
         for i in sentences:
